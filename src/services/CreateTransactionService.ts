@@ -1,15 +1,17 @@
-import { getRepository } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 
 import AppError from '../errors/AppError';
 
+import TransactionsRepository from '../repositories/TransactionsRepository';
 import Transaction from '../models/Transaction';
-import Category from '../models/Category';
+import CreateCategoryService from './CreateCategoryService';
 
 interface Request {
   title: string;
   value: number;
   type: 'income' | 'outcome';
   category: string;
+  noImport?: boolean;
 }
 
 class CreateTransactionService {
@@ -18,25 +20,20 @@ class CreateTransactionService {
     value,
     type,
     category,
+    noImport = false,
   }: Request): Promise<Transaction> {
-    const transactionRepository = getRepository(Transaction);
-    const categoryRepository = getRepository(Category);
+    const transactionRepository = getCustomRepository(TransactionsRepository);
 
-    const checkCategoryExists = await categoryRepository.findOne({
-      where: { title: category },
-    });
+    const { total } = await transactionRepository.getBalance();
 
-    let newCategory: Category;
-
-    if (!checkCategoryExists) {
-      newCategory = categoryRepository.create({
-        title: category,
-      });
-
-      await categoryRepository.save(newCategory);
-    } else {
-      newCategory = checkCategoryExists;
+    if (type === 'outcome' && value > total && noImport) {
+      throw new AppError(
+        'The withdrawal amount cannot be greater than the total',
+      );
     }
+
+    const createCategoryService = new CreateCategoryService();
+    const newCategory = await createCategoryService.execute(category);
 
     const transaction = transactionRepository.create({
       title,
