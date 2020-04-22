@@ -22,7 +22,9 @@ class ImportTransactionsService {
     const createTransactionService = new CreateTransactionService();
     const createCategoryService = new CreateCategoryService();
 
-    const parser = promisify(csvParse);
+    const parser = promisify<Buffer, csvParse.Options, TransactionCsv[]>(
+      csvParse,
+    );
     const parsedTransactions: TransactionCsv[] = await parser(file.buffer, {
       delimiter: ',',
       columns: true,

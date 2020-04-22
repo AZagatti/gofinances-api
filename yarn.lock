@@ -663,6 +663,13 @@
   dependencies:
     "@types/superagent" "*"
 
+"@types/util.promisify@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/util.promisify/-/util.promisify-1.0.3.tgz#ad8468945cc10d51f8dffba06a7531202ce7557a"
+  integrity sha512-YsXT6omibFNTu46OYJvZcCrMvAYOrQS6udEPMEgnYYkDARCBQ8CfqAvY+PK48qCb/qpIfmfpl4bduS3zUwbm9Q==
+  dependencies:
+    "@types/node" "*"
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"
